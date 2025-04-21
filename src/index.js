@@ -135,7 +135,6 @@ const randomYear = () => {
         if (!code) {
           throw 'no otp';
         }
-        console.log(code.split(' '));
 
         const otp = code.split('.')[0].split(' ')[8];
         color.italic(`otp ${otp}`);
