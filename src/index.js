@@ -138,7 +138,7 @@ const randomYear = () => {
         console.log(code.split(' '));
 
         const otp = code.split('.')[0].split(' ')[8];
-        color.italic('otp ', otp);
+        color.italic(`otp ${otp}`);
 
         const doingRegister = await register(
           nameAccount,
