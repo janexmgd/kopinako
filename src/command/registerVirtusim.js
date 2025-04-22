@@ -12,7 +12,7 @@ import {
   getBalance,
   orderNum,
   // setMaxPrice,
-} from '../func/smshub.js';
+} from '../func/virtusim.js';
 import { register, settAccount, validateRegister } from '../func/nako.js';
 import color from '../utils/color.js';
 
@@ -139,20 +139,20 @@ const nakoRegister = async () => {
     referral_code,
   };
 };
-const registerAccount = async () => {
+const registerAccountVirtusim = async () => {
   try {
     process.stdout.write('\x1Bc');
     console.log(
-      boxen(`nako register and set birthday [SMSHUB]`, {
+      boxen(`nako register and set birthday [VIRTUSIM]`, {
         align: 'center',
         padding: 2,
       })
     );
 
     // return;
-    const { SMSHUB_APIKEY } = process.env;
-    if (!SMSHUB_APIKEY) {
-      return color.red('Please set the SMSHUB_APIKEY environment variable.');
+    const { VIRTUSIM_APIKEY } = process.env;
+    if (!VIRTUSIM_APIKEY) {
+      return color.red('Please set the VIRTUSIM_APIKEY environment variable.');
     }
     const { manyAccounts } = await inquirer.prompt({
       type: 'number',
@@ -166,17 +166,20 @@ const registerAccount = async () => {
         process.stdout.write('\x1Bc');
         console.log(`PROCESS ACCOUNT ${i} of ${manyAccounts}`);
         await getBalance();
-        const MAX_WAIT_TIME = config.otp.MAX_WAIT_TIME || 30000;
+        const MAX_WAIT_TIME = 183000 || 30000;
         const CHECK_INTERVAL = config.otp.CHECK_INTERVAL || 5000;
         const { nameAccount, email, password, referral_code } =
           await nakoRegister();
 
         const { orderid, number } = await orderNum();
+        // console.log({ orderid, number });
+
         let phoneNum = number.replace(/^62/, '+62');
         let id = orderid;
         let totalTimeWaited = 0;
         let code;
         // let tryingOTP = 1;
+        await changeStatus(id, '1');
         await validateRegister(
           nameAccount,
           phoneNum,
@@ -196,8 +199,8 @@ const registerAccount = async () => {
           code = await checkCode(id);
           if (code !== undefined) {
             color.italic(`\nchanging status order ${id}`);
-            const status = await changeStatus(id, '6');
-            color.italic(`status order id ${id} ${status}`);
+            await changeStatus(id, '4');
+
             break;
           }
 
@@ -205,8 +208,8 @@ const registerAccount = async () => {
 
           if (totalTimeWaited >= MAX_WAIT_TIME) {
             color.italic(`\nchanging status order ${id}`);
-            const status = await changeStatus(id, '8');
-            color.italic(`status order id ${id} ${status}`);
+            await changeStatus(id, '2');
+
             let isOrderagain = true;
             if (isOrderagain) {
               const { orderid, number } = await orderNum();
@@ -324,4 +327,4 @@ const registerAccount = async () => {
     console.log(error);
   }
 };
-export default registerAccount;
+export default registerAccountVirtusim;
