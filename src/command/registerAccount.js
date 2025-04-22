@@ -31,7 +31,18 @@ const randomYear = () => {
 
 const readResult = async () => {
   try {
-    const listAccount = await readFile('result.txt', 'utf-8');
+    let filePath = path.join(process.cwd(), 'result.txt');
+    if (!fs.existsSync(filePath)) {
+      color.italic(`Creating file ${filePath}`);
+      fs.open(filePath, 'w', (err) => {
+        if (err) {
+          throw err;
+        }
+
+        console.log('success creating file');
+      });
+    }
+    const listAccount = await readFile(filePath, 'utf-8');
     let accountJson = [];
     listAccount
       .split('\n')
