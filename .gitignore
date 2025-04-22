@@ -1,3 +1,4 @@
 node_modules
 result.txt
 .env
+.DS_Store

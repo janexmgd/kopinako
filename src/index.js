@@ -5,6 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import boxen from 'boxen';
 import color from './utils/color.js';
+import { faker } from '@faker-js/faker';
 import {
   changeStatus,
   checkCode,
@@ -33,18 +34,19 @@ const randomYear = () => {
     if (!SMSHUB_APIKEY) {
       return color.red('Please set the SMSHUB_APIKEY environment variable.');
     }
-    // const { manyAccounts } = await inquirer.prompt({
-    //   type: 'number',
-    //   message: 'how many account you want ?',
-    //   name: 'manyAccounts',
-    // });
-    let manyAccounts = 1;
+    let manyAccounts = await inquirer
+      .prompt({
+        type: 'number',
+        message: 'how many account you want ?',
+        name: 'manyAccounts',
+      })
+      .then((answers) => {
+        return answers.manyAccounts;
+      });
     let i = 1;
     while (i <= manyAccounts) {
       try {
         await getBalance();
-        // const maxPrice = 0.012;
-        // await setMaxPrice(maxPrice);
         const MAX_WAIT_TIME = 30000;
         const CHECK_INTERVAL = 3000;
         const { orderid, number } = await orderNum();
@@ -52,27 +54,12 @@ const randomYear = () => {
         let id = orderid;
         let totalTimeWaited = 0;
         let code;
-        const { nameAccount } = await inquirer.prompt({
-          type: 'message',
-          message: 'insert name of account',
-          name: 'nameAccount',
-        });
-        const { email } = await inquirer.prompt({
-          type: 'message',
-          message: 'insert your email',
-          name: 'email',
-        });
-        const { password } = await inquirer.prompt({
-          type: 'message',
-          message: 'insert password of your account',
-          name: 'password',
-        });
 
-        const { refferal_code } = await inquirer.prompt({
-          type: 'message',
-          message: 'insert refferall code',
-          name: 'refferal_code',
-        });
+        const nameAccount = faker.internet.username();
+        const email = faker.internet.email(nameAccount);
+        const password = 'Bismillah123';
+        const refferal_code = process.env.REFERRAL_CODE;
+
         await validateRegister(
           nameAccount,
           phoneNum,
@@ -80,7 +67,6 @@ const randomYear = () => {
           email,
           refferal_code
         );
-        let tryingOTP = 1;
         while (totalTimeWaited <= MAX_WAIT_TIME) {
           if (totalTimeWaited == 0) {
             color.italic(`checking otp order id ${id}`);
@@ -99,20 +85,6 @@ const randomYear = () => {
             color.italic(`changing status order ${id}`);
             const status = await changeStatus(id, '8');
             color.italic(`status order id ${id} ${status}`);
-            // if (tryingOTP <= 3) {
-            //   await validateRegister(
-            //     nameAccount,
-            //     phoneNum,
-            //     password,
-            //     email,
-            //     refferal_code
-            //   );
-            //   tryingOTP++;
-            //   totalTimeWaited = 0;
-            // } else {
-            //   color.red(`failed obtain otp at 3 chance`);
-            //   break;
-            // }
             let isOrderagain = true;
             if (isOrderagain) {
               const { orderid, number } = await orderNum();
@@ -147,9 +119,9 @@ const randomYear = () => {
           refferal_code,
           otp
         );
-        color.italic(`success register`);
+        color.italic(`success register\n`);
         const session = doingRegister.headers.session_key;
-        console.log(JSON.stringify(doingRegister.data.user));
+        // console.log(JSON.stringify(doingRegister.data.user));
         const filePath = path.join(process.cwd(), 'result.txt');
         if (!fs.existsSync(filePath)) {
           color.italic(`Creating file ${filePath}`);
@@ -163,15 +135,8 @@ const randomYear = () => {
         const result = `${phoneNum} ${email} ${password}\n`;
         fs.appendFileSync(filePath, result);
         const formattedDate = randomYear();
-        let gender = 1; // 1 man 2 woman
-        const settBirthday = await settAccount(
-          session,
-          nameAccount,
-          email,
-          gender,
-          formattedDate
-        );
-        console.log(settBirthday);
+        let gender = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
+        await settAccount(session, nameAccount, email, gender, formattedDate);
 
         i++;
       } catch (error) {
