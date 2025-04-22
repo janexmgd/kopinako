@@ -1,4 +1,5 @@
 node_modules
 result.txt
 .env
+result.json
 .DS_Store
