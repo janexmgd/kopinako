@@ -127,3 +127,25 @@ export async function settAccount(session, name, email, gender, birthday) {
     httpErrorHandle('sett account failed', error);
   }
 }
+export async function login(mobile_number, password) {
+  try {
+    const response = await axios.post(
+      'https://landing-nako.stamps.co.id/api/auth/login',
+      {
+        mobile_number: mobile_number,
+        password: password,
+      },
+      {
+        headers: {
+          'User-Agent': 'okhttp/4.12.0',
+          'Accept-Encoding': 'gzip',
+          'Content-Type': 'application/json; application/json; charset=utf-8',
+          authorization: 'token dLzZDjYo71l2a3b04DI1VddaUiegcIX3EsBiO3VG',
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    httpErrorHandle('login failed', error);
+  }
+}

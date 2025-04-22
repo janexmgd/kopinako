@@ -1,0 +1,14 @@
+{
+  "auto": {
+    "name": true,
+    "email": true
+  },
+  "email_address": "akunhok018@gmail.com",
+  "password": "DennyPacarMinju#1299",
+  "referral_code": "DENNYS7U",
+  "gender": "male",
+  "otp": {
+    "CHECK_INTERVAL": 3000,
+    "MAX_WAIT_TIME": 30000
+  }
+}
