@@ -141,7 +141,7 @@ const registerAccount = async () => {
             color.green('success creating file');
           });
         }
-        const result = `${phoneNum} ${email} ${password}\n`;
+        const result = `${phoneNum} ${email} ${password} ${session}\n`;
         fs.appendFileSync(filePath, result);
         const formattedDate = randomYear();
         let gender = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
