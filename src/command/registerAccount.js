@@ -19,10 +19,19 @@ import showLoading from '../utils/loading.js';
 const randomYear = () => {
   const currentDate = new Date();
   const randomYear = Math.floor(Math.random() * (2004 - 2000 + 1)) + 2000;
-  const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-  const day = String(currentDate.getDate()).padStart(2, '0');
 
-  return `${randomYear}-${month}-${day}`;
+  // Buat newdate dan +1 hari
+  const newdate = new Date(currentDate);
+  newdate.setDate(newdate.getDate() + 1);
+  newdate.setFullYear(randomYear);
+
+  // Ambil bulan dan hari dari newdate
+  const month = String(newdate.getMonth() + 1).padStart(2, '0');
+  const day = String(newdate.getDate()).padStart(2, '0');
+
+  // Format YYYY-MM-DD
+  const formattedDate = `${randomYear}-${month}-${day}`;
+  return formattedDate;
 };
 
 let stopLoading;
