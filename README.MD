@@ -34,6 +34,7 @@
 
 ```
 SMSHUB_APIKEY=
+VIRTUSIM_APIKEY=
 ```
 
 ### how-to-run
