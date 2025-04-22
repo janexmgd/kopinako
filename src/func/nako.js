@@ -26,7 +26,6 @@ export async function validateRegister(
         },
       }
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     httpErrorHandle('validate register failed', error);

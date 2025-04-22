@@ -2,10 +2,11 @@
 
 ### set-env
 
-- insert your smshub apikey to .env file
+- insert your smshub apikey and refferal code to .env file
 
 ```
 SMSHUB_APIKEY=
+REFERRAL_CODE=
 ```
 
 ### how-to-run
