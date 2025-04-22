@@ -13,6 +13,7 @@ import {
   orderNum,
   // setMaxPrice,
 } from './func/smshub.js';
+import chalk from 'chalk';
 const randomYear = () => {
   const currentDate = new Date();
   const randomYear = Math.floor(Math.random() * (2004 - 2000 + 1)) + 2000;
@@ -69,22 +70,22 @@ const randomYear = () => {
         );
         while (totalTimeWaited <= MAX_WAIT_TIME) {
           if (totalTimeWaited == 0) {
-            color.italic(`checking otp order id ${id}`);
+            color.info(`checking otp...`);
           }
-          color.italic(`WAITING OTP ${totalTimeWaited}ms`);
+          // color.italic(`WAITING OTP ${totalTimeWaited}ms`);
           await new Promise((resolve) => setTimeout(resolve, CHECK_INTERVAL));
           code = await checkCode(id);
           if (code != undefined) {
-            color.italic(`changing status order ${id}`);
+            // color.warning(`changing status order ${id}`);
             const status = await changeStatus(id, '6');
-            color.italic(`status order id ${id} ${status}`);
+            // color.info(`status order id ${id} ${status}`);
             break;
           }
           totalTimeWaited += CHECK_INTERVAL;
           if (totalTimeWaited >= MAX_WAIT_TIME) {
-            color.italic(`changing status order ${id}`);
+            // console.log(`changing status order ${color.warning(id)}`);
             const status = await changeStatus(id, '8');
-            color.italic(`status order id ${id} ${status}`);
+            // color.info(`status order id ${id} ${status}`);
             let isOrderagain = true;
             if (isOrderagain) {
               const { orderid, number } = await orderNum();
@@ -109,7 +110,7 @@ const randomYear = () => {
         }
 
         const otp = code.split('.')[0].split(' ')[8];
-        color.italic(`otp ${otp}`);
+        console.log(`OTP : ${chalk.green(otp)}`);
 
         const doingRegister = await register(
           nameAccount,
@@ -119,17 +120,17 @@ const randomYear = () => {
           refferal_code,
           otp
         );
-        color.italic(`success register\n`);
+
         const session = doingRegister.headers.session_key;
         // console.log(JSON.stringify(doingRegister.data.user));
         const filePath = path.join(process.cwd(), 'result.txt');
         if (!fs.existsSync(filePath)) {
-          color.italic(`Creating file ${filePath}`);
+          color.info(`Creating file ${filePath}`);
           fs.open(filePath, 'w', (err) => {
             if (err) {
               throw err;
             }
-            console.log('success creating file');
+            color.green('success creating file');
           });
         }
         const result = `${phoneNum} ${email} ${password}\n`;
@@ -137,7 +138,7 @@ const randomYear = () => {
         const formattedDate = randomYear();
         let gender = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
         await settAccount(session, nameAccount, email, gender, formattedDate);
-
+        color.green(`Success Register and save account to result.txt\n`);
         i++;
       } catch (error) {
         console.log(error);

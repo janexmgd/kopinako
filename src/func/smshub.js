@@ -1,5 +1,7 @@
 import axios from 'axios';
 import 'dotenv/config';
+import color from './../utils/color.js';
+import chalk from 'chalk';
 const { SMSHUB_APIKEY } = process.env;
 
 export async function getBalance() {
@@ -8,7 +10,7 @@ export async function getBalance() {
     const { data } = await axios.get(url);
     if (data.includes('ACCESS_BALANCE')) {
       const balance = parseFloat(data.split(':')[1]);
-      console.log(`Success get smshub balance = ${balance}`);
+      color.green(`Success get smshub balance = ${balance}`);
       if (balance > 0) {
         return balance;
       } else {
@@ -33,7 +35,11 @@ export const orderNum = async () => {
       const orderid = data.split(':')[1];
       const number = data.split(':')[2];
       console.log(
-        `Success get number with\n> orderid = ${orderid}\n> number = ${number}`
+        `${chalk.green(
+          '\nSuccess get number with'
+        )}\n > orderid = ${chalk.yellow(orderid)}\n > number  = ${chalk.yellow(
+          number
+        )}`
       );
       return { orderid, number };
     }
