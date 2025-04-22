@@ -8,7 +8,7 @@ import { table, getBorderCharacters } from 'table';
 
 const checkAccountVoucher = async () => {
   try {
-    let tableData = [['id', 'code', 'start_date', 'end_date', 'description']];
+    let tableData = [['id', 'code', 'start_date', 'end_date', 'title']];
     const listAccount = await readFile(
       path.join(process.cwd(), 'result.txt'),
       'utf-8'
@@ -53,6 +53,8 @@ const checkAccountVoucher = async () => {
       const doLogin = await login(input.phoneNum, input.password);
       sessionLogin = doLogin.headers.session_key;
       listVoucher = await userVoucher(sessionLogin);
+      //   console.log(JSON.stringify(listVoucher, null, 4));
+      //   return;
       fs.readFile(resultJsonfilePath, 'utf-8', (err, fileData) => {
         if (err) throw err;
         let data = JSON.parse(fileData);
@@ -141,7 +143,7 @@ const checkAccountVoucher = async () => {
         voucher.code,
         voucher.start_date,
         voucher.end_date,
-        voucher.template.short_description,
+        voucher.template.name,
       ]);
     }
     console.log(
