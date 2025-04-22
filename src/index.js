@@ -14,6 +14,7 @@ import {
   // setMaxPrice,
 } from './func/smshub.js';
 import chalk from 'chalk';
+import showLoading from './utils/loading.js';
 const randomYear = () => {
   const currentDate = new Date();
   const randomYear = Math.floor(Math.random() * (2004 - 2000 + 1)) + 2000;
@@ -22,6 +23,9 @@ const randomYear = () => {
 
   return `${randomYear}-${month}-${day}`;
 };
+
+let stopLoading;
+
 (async () => {
   try {
     process.stdout.write('\x1Bc');
@@ -70,7 +74,8 @@ const randomYear = () => {
         );
         while (totalTimeWaited <= MAX_WAIT_TIME) {
           if (totalTimeWaited == 0) {
-            color.info(`checking otp...`);
+            // color.info(`checking otp...`);
+            stopLoading = showLoading('Checking OTP');
           }
           // color.italic(`WAITING OTP ${totalTimeWaited}ms`);
           await new Promise((resolve) => setTimeout(resolve, CHECK_INTERVAL));
@@ -78,6 +83,7 @@ const randomYear = () => {
           if (code != undefined) {
             // color.warning(`changing status order ${id}`);
             const status = await changeStatus(id, '6');
+            stopLoading();
             // color.info(`status order id ${id} ${status}`);
             break;
           }
@@ -85,6 +91,7 @@ const randomYear = () => {
           if (totalTimeWaited >= MAX_WAIT_TIME) {
             // console.log(`changing status order ${color.warning(id)}`);
             const status = await changeStatus(id, '8');
+            stopLoading();
             // color.info(`status order id ${id} ${status}`);
             let isOrderagain = true;
             if (isOrderagain) {
